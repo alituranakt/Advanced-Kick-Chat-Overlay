@@ -2,9 +2,6 @@
 
 A customizable, always-on-top, and frameless desktop application that allows you to monitor Kick.com chat. Ideal for streamers who want to keep an eye on chat while gaming or for users who want a minimal chat client.
 
-![Application Screenshot](https://i.imgur.com/your_screenshot_url.png)
-*(Note: Replace this link with a URL of your own screenshot.)*
-
 ---
 
 ## ✨ Features
