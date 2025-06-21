@@ -6,7 +6,7 @@ A customizable, always-on-top, and frameless desktop application that allows you
 
 ## ✨ Features
 
-- **Frameless & Transparent:** A minimal interface that doesn't get in the way of your game or other content.
+
 - **Always on Top:** The chat window remains visible over all other applications.
 - **Extensive Customization:**
   - Adjustable window size (width and height).
