@@ -14,7 +14,7 @@ A customizable, frameless, always-on-top desktop application for viewing Kick.co
 -   **Extensive Customization:**
     -   Adjustable window size (width and height).
     -   Configurable font size for chat text.
-    -   Adjustable window opacity (from 0% to 100%).
+    -   Adjustable window.
 -   **Multi-Language Support:** Settings interface available in English, Turkish, French, Russian, Chinese, and Korean.
 -   **Advanced Positioning:**
     -   Place the window in 6 preset positions (corners and middle-sides).
