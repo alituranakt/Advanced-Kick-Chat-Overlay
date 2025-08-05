@@ -5,7 +5,7 @@ A customizable, frameless, always-on-top desktop application for viewing Kick.co
 ![Application Screenshot][(https://prnt.sc/d5prBtppCMSX)
 ![Client Screenshot] (https://prnt.sc/HCn1KDj-cYLZ)
 
-!!!!!!!!!!!!! Important 
+!!!!!!!!!!!!! Important !!!!!!!!!!!!!
 
 Versions section could be outdated (i forget to update it) but executable version is working without problem. 
 5.08.2025 / 08.5.2025 
