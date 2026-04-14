@@ -8,6 +8,7 @@ import json
 import os
 import threading
 import keyboard
+import time
 
 # Ayar dosyasının adı
 SETTINGS_FILE = 'settings.json'
@@ -32,6 +33,49 @@ class KickOverlayApp:
         self.screen_height = user32.GetSystemMetrics(1)
 
         self.setup_gui()
+
+    def _apply_click_through_style(self, window_title):
+        user32 = ctypes.windll.user32
+        hwnd = None
+
+        for _ in range(50):
+            hwnd = user32.FindWindowW(None, window_title)
+            if hwnd:
+                break
+            time.sleep(0.1)
+
+        if not hwnd:
+            raise RuntimeError("Overlay pencere handle'ı bulunamadı.")
+
+        GWL_EXSTYLE = -20
+        WS_EX_LAYERED = 0x00080000
+        WS_EX_TRANSPARENT = 0x00000020
+        WS_EX_NOACTIVATE = 0x08000000
+        WS_EX_TOOLWINDOW = 0x00000080
+        HWND_TOPMOST = -1
+        SWP_NOMOVE = 0x0002
+        SWP_NOSIZE = 0x0001
+        SWP_NOACTIVATE = 0x0010
+        SWP_FRAMECHANGED = 0x0020
+
+        current_style = user32.GetWindowLongW(hwnd, GWL_EXSTYLE)
+        click_through_style = (
+            current_style
+            | WS_EX_LAYERED
+            | WS_EX_TRANSPARENT
+            | WS_EX_NOACTIVATE
+            | WS_EX_TOOLWINDOW
+        )
+        user32.SetWindowLongW(hwnd, GWL_EXSTYLE, click_through_style)
+        user32.SetWindowPos(
+            hwnd,
+            HWND_TOPMOST,
+            0,
+            0,
+            0,
+            0,
+            SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_FRAMECHANGED
+        )
 
     def load_settings(self):
         # DÜZELTME: Varsayılan kaydırma tuşları yön tuşları olarak ayarlandı.
@@ -237,6 +281,7 @@ class KickOverlayApp:
         position_key = self.settings.get('position_key', 'top_right')
         font_size = self.settings.get('font_size', 14)
         x, y = self._calculate_coordinates(position_key, win_width, win_height)
+        window_title = f"Kick Chat - {self.settings['channel_name']}"
         
         self.hotkey_thread = threading.Thread(target=self._hotkey_listener, daemon=True)
         self.hotkey_thread.start()
@@ -248,12 +293,13 @@ class KickOverlayApp:
             }}
             // DÜZELTME: Yeni filtre listeye eklendi.
             const pathsToRemove = [
-                '/html/body/div/div[2]/div/div/div',
-                '/html/body/div/div[1]/div/div[1]',
-                '/html/body/div/div[1]/div/div/div[1]',
-                '/html/body/div/div[1]/div/div/div[1]/div[1]',
-                '/html/body/div/div[1]/div/div/div[2]',
-                '/html/body/div/div[1]/div/div[2]/div[1]/div[2]/div/div[26]/div'
+                '/html/body/div[2]/div[2]/div',
+                '/html/body/div[2]/div[1]/div/div/div[1]',
+                '/html/body/div[2]/div[1]/div/div/div/div[1]',
+                '/html/body/div[2]/div[1]/div/div/div/div[2]',
+                '/html/body/div[2]/div[1]/div/div/div/div/div[1]',
+                '/html/body/div[2]/div[1]/div/div/div/div/div[1]/div/div[26]/div',
+                '/html/body/div[2]/div[1]/div/div/div/div/div[2]'
             ];
             pathsToRemove.forEach(path => {{
                 const element = getElementByXPath(path);
@@ -271,10 +317,11 @@ class KickOverlayApp:
         
         def inject_js(window):
             window.evaluate_js(js_code_to_inject)
+            self._apply_click_through_style(window_title)
 
         try:
             self.window = webview.create_window(
-                f"Kick Chat - {self.settings['channel_name']}",
+                window_title,
                 f"https://kick.com/popout/{self.settings['channel_name']}/chat",
                 width=win_width, height=win_height, x=x, y=y,
                 resizable=True, on_top=True, transparent=True, frameless=True
